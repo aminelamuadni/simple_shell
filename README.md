@@ -17,4 +17,4 @@ This project is a simple UNIX command line interpreter built as part of the ALX 
 
 ## Acknowledgements
 
-This project was done collaboratively by Ayouch Moncif and Amine Lamuadni as part of the ALX Software Engineering Program curriculum.
+This project was done collaboratively by [Ayouch Moncif](https://github.com/moncef63) and [Amine Lamuadni](https://github.com/aminelamuadni) as part of the ALX Software Engineering Program curriculum.
