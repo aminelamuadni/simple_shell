@@ -17,7 +17,7 @@ ssize_t read_input(char **line, size_t *len)
  * @args: The arguments for the command.
  * @argv: Argument vector from main for error reporting.
  */
-void execute_command(char *cmd, char **args, char *argv[])
+void execute_command(char *cmd, char **args, char *argv[], char *line)
 {
 	pid_t child_pid;
 	int status;
@@ -29,7 +29,8 @@ void execute_command(char *cmd, char **args, char *argv[])
 		if (execve(cmd, args, environ) == -1)
 		{
 			perror(argv[0]);
-			exit(EXIT_FAILURE);
+			free(line);
+			exit(EXIT_SUCCESS);
 		}
 	}
 	else
@@ -83,7 +84,7 @@ int main(int argc, char *argv[])
 		args[1] = NULL;
 
 		if (line[0])
-			execute_command(args[0], args, argv);
+			execute_command(args[0], args, argv, line);
 	}
 
 	free(line);
