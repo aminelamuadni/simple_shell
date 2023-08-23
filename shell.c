@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-		printf("#cisfun$ ");
+		write(STDOUT_FILENO, "#cisfun$ ", 9);
 
 		nread = read_input(&line, &len);
 
 		if (nread == -1)
 		{
-			printf("\n");
+			write(STDOUT_FILENO, "\n", 1);
 			free(line);
 			exit(0);
 		}
