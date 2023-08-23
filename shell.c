@@ -66,15 +66,13 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-		if (is_interactive())
-			write(STDOUT_FILENO, "#cisfun$ ", 9);
+		write(STDOUT_FILENO, "#cisfun$ ", 9);
 
 		nread = read_input(&line, &len);
 
 		if (nread == -1)
 		{
-			if (is_interactive())
-				write(STDOUT_FILENO, "\n", 1);
+			write(STDOUT_FILENO, "\n", 1);
 
 			free(line);
 			exit(EXIT_SUCCESS);
