@@ -1,6 +1,18 @@
 #include "shell.h"
 
 /**
+ * get_data - Returns a pointer to the shell's data structure.
+ *
+ * Return: Pointer to the static instance of shell_data_t.
+ */
+shell_data_t *get_data(void)
+{
+	static shell_data_t data = {NULL};
+
+	return (&data);
+}
+
+/**
  * read_input - Reads a line from stdin.
  * @line: Pointer to the line buffer.
  * @len: Length of the buffer.
@@ -16,9 +28,8 @@ ssize_t read_input(char **line, size_t *len)
  * @cmd: The command to execute.
  * @args: The arguments for the command.
  * @argv: Argument vector from main for error reporting.
- * @line: The input line to free if an error occurs in the child process.
  */
-void execute_command(char *cmd, char **args, char *argv[], char *line)
+void execute_command(char *cmd, char **args, char *argv[])
 {
 	pid_t child_pid;
 	int status;
@@ -30,7 +41,6 @@ void execute_command(char *cmd, char **args, char *argv[], char *line)
 		if (execve(cmd, args, environ) == -1)
 		{
 			perror(argv[0]);
-			free(line);
 			exit(EXIT_SUCCESS);
 		}
 	}
@@ -57,37 +67,39 @@ int is_interactive(void)
  */
 int main(int argc, char *argv[])
 {
-	char *line = NULL;
+	shell_data_t *data = get_data();
 	size_t len = 0;
 	ssize_t nread;
 	char *args[2];
 
 	(void) argc;
 
+	signal(SIGINT, handle_sigint);
+
 	while (1)
 	{
 		if (is_interactive())
 			write(STDOUT_FILENO, "$ ", 2);
 
-		nread = read_input(&line, &len);
+		nread = read_input(&data->line, &len);
 
 		if (nread == -1)
 		{
 			if (is_interactive())
 				write(STDOUT_FILENO, "\n", 1);
 
-			free(line);
+			free(data->line);
 			exit(EXIT_SUCCESS);
 		}
 
-		line[nread - 1] = '\0';
-		args[0] = line;
+		data->line[nread - 1] = '\0';
+		args[0] = data->line;
 		args[1] = NULL;
 
-		if (line[0])
-			execute_command(args[0], args, argv, line);
+		if (data->line[0])
+			execute_command(args[0], args, argv);
 	}
 
-	free(line);
+	free(data->line);
 	return (0);
 }
