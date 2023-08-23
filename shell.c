@@ -33,6 +33,7 @@ void execute_command(char *cmd, char **args, char *argv[])
 {
 	pid_t child_pid;
 	int status;
+	shell_data_t *data = get_data();
 
 	child_pid = fork();
 
@@ -41,7 +42,8 @@ void execute_command(char *cmd, char **args, char *argv[])
 		if (execve(cmd, args, environ) == -1)
 		{
 			perror(argv[0]);
-			exit(EXIT_SUCCESS);
+			free(data->line);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else
@@ -98,6 +100,9 @@ int main(int argc, char *argv[])
 
 		if (data->line[0])
 			execute_command(args[0], args, argv);
+
+		free(data->line);
+		data->line = NULL;
 	}
 
 	free(data->line);
