@@ -29,7 +29,7 @@ void execute_command(char *cmd, char **args, char *argv[])
 		if (execve(cmd, args, environ) == -1)
 		{
 			perror(argv[0]);
-			exit(0);
+			exit(1);
 		}
 	}
 	else
@@ -82,7 +82,8 @@ int main(int argc, char *argv[])
 		args[0] = line;
 		args[1] = NULL;
 
-		execute_command(args[0], args, argv);
+		if (line[0])
+			execute_command(args[0], args, argv);
 	}
 
 	free(line);
