@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * print_prompt - Print shell prompt if in interactive mode.
+ * print_prompt - Print the shell prompt if in interactive mode.
  */
 void print_prompt(void)
 {
