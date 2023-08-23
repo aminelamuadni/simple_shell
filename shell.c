@@ -29,7 +29,7 @@ void execute_command(char *cmd, char **args, char *argv[])
 		if (execve(cmd, args, environ) == -1)
 		{
 			perror(argv[0]);
-			exit(1);
+			exit(EXIT_FAILURE);
 		}
 	}
 	else
@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
 				write(STDOUT_FILENO, "\n", 1);
 
 			free(line);
-			exit(0);
+			exit(EXIT_SUCCESS);
 		}
 
 		line[nread - 1] = '\0';
