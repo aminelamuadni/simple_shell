@@ -2,8 +2,8 @@
 
 /**
  * tokenize_input - Tokenizes the input line based on whitespace.
- * @line: The input line to tokenize.
- * Return: An array of tokens (words).
+ * @line: The input line to be tokenize.
+ * Return: An array of token (words).
  */
 char **tokenize_input(char *line)
 {
