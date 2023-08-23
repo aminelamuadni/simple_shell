@@ -43,7 +43,7 @@ In this milestone, building upon the previous version, we aim to:
 
 ## Authors
 
-- [Ayouch Moncif](https://github.com/moncef63)
+- [Moncif Ayouch](https://github.com/moncef63)
 - [Amine Lamuadni](https://github.com/aminelamuadni)
 
 ## Acknowledgements
