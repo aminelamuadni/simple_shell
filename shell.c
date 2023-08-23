@@ -64,13 +64,16 @@ int main(int argc, char *argv[])
 
 	while (1)
 	{
-		write(STDOUT_FILENO, "#cisfun$ ", 9);
+		if (is_interactive())
+			write(STDOUT_FILENO, "#cisfun$ ", 9);
 
 		nread = read_input(&line, &len);
 
 		if (nread == -1)
 		{
-			write(STDOUT_FILENO, "\n", 1);
+			if (is_interactive())
+				write(STDOUT_FILENO, "\n", 1);
+
 			free(line);
 			exit(0);
 		}
@@ -80,9 +83,6 @@ int main(int argc, char *argv[])
 		args[1] = NULL;
 
 		execute_command(args[0], args, argv);
-
-		if (!is_interactive())
-			break;
 	}
 
 	free(line);
