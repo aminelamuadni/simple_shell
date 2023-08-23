@@ -1,9 +1,9 @@
 #include "shell.h"
 
 /**
- * main - Entry point for simple shell.
+ * main - Entry point for the simple shell.
  * @argc: Argument count (not used).
- * @argv: Argument vector, used for error reporting.
+ * @argv: Argument vector, used for the  error reporting.
  * Return: Always 0 (success).
  */
 int main(int argc, char *argv[])
@@ -12,11 +12,8 @@ int main(int argc, char *argv[])
 	size_t len = 0;
 	ssize_t nread;
 	char **args;
-
 	(void) argc;
-
 	signal(SIGINT, handle_sigint);
-
 	while (1)
 	{
 		print_prompt();
@@ -32,12 +29,9 @@ int main(int argc, char *argv[])
 		}
 
 		data->line[nread - 1] = '\0';
-
 		args = tokenize_input(data->line);
-
 		if (args[0] && args[0][0])
 			execute_command(args[0], args, argv);
-
 		free(data->line);
 		data->line = NULL;
 	}
