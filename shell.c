@@ -16,6 +16,7 @@ ssize_t read_input(char **line, size_t *len)
  * @cmd: The command to execute.
  * @args: The arguments for the command.
  * @argv: Argument vector from main for error reporting.
+ * @line: The input line to free if an error occurs in the child process.
  */
 void execute_command(char *cmd, char **args, char *argv[], char *line)
 {
