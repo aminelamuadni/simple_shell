@@ -80,6 +80,9 @@ int main(int argc, char *argv[])
 		args[1] = NULL;
 
 		execute_command(args[0], args, argv);
+
+		if (!is_interactive())
+			break;
 	}
 
 	free(line);
