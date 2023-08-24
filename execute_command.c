@@ -1,11 +1,10 @@
+#include "shell.h"
+
 /**
  * execute_command - Executes a given command.
  * @cmd: The command to execute.
  * @args: The arguments for the command.
  * @argv: Argument vector from main for error reporting.
- * @cmd: command to execute.
- * @args: arguments for the commands.
- * @argv: Argument vector from the main for errors reporting.
  */
 void execute_command(char *cmd, char **args, char *argv[])
 {
