@@ -24,7 +24,13 @@ int main(int argc, char *argv[])
 		{
 			if (is_interactive())
 				write(STDOUT_FILENO, "\n", 1);
-			free(data->line);
+
+			if (data->line)
+			{
+				free(data->line);
+				data->line = NULL;
+			}
+
 			exit(EXIT_SUCCESS);
 		}
 
@@ -32,10 +38,17 @@ int main(int argc, char *argv[])
 		args = tokenize_input(data->line);
 		if (args[0] && args[0][0])
 			execute_command(args[0], args, argv);
+		if (data->line)
+		{
+			free(data->line);
+			data->line = NULL;
+		}
+	}
+
+	if (data->line)
+	{
 		free(data->line);
 		data->line = NULL;
 	}
-
-	free(data->line);
 	return (0);
 }
