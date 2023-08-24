@@ -1,6 +1,56 @@
 #include "shell.h"
 
 /**
+ * handle_relative_path_cmd - Determines the full path for commands.
+ * @cmd: The command to check.
+ * Return: The full path or the command itself if it's a relative path.
+ */
+static char *handle_relative_path_cmd(char *cmd)
+{
+	if (cmd[0] == '/' || cmd[0] == '.' || _strchr(cmd, '/'))
+		return (cmd);
+	return (get_cmd_path(cmd));
+}
+
+/**
+ * error_command_not_found - Reports an error when a command is not found.
+ * @cmd: The command that was not found.
+ * @argv: Argument vector from main for error reporting.
+ */
+static void error_command_not_found(char *cmd, char *argv[])
+{
+	shell_data_t *data = get_data();
+
+	write(2, argv[0], _strlen(argv[0]));
+	write(2, ": 1: ", 5);
+	write(2, cmd, strlen(cmd));
+	write(2, ": not found\n", 12);
+	if (data->line)
+	{
+		free(data->line);
+		data->line = NULL;
+	}
+	exit(127);
+}
+
+/**
+ * handle_exec_error - Handles errors during execve execution.
+ * @argv: Argument vector from main for error reporting.
+ */
+static void handle_exec_error(char *argv[])
+{
+	shell_data_t *data = get_data();
+
+	perror(argv[0]);
+	if (data->line)
+	{
+		free(data->line);
+		data->line = NULL;
+	}
+	exit(EXIT_FAILURE);
+}
+
+/**
  * execute_command - Executes a given command.
  * @cmd: The command to execute.
  * @args: The arguments for the command.
@@ -10,27 +60,28 @@ void execute_command(char *cmd, char **args, char *argv[])
 {
 	pid_t child_pid;
 	int status;
-	shell_data_t *data = get_data();
+	char *full_path = handle_relative_path_cmd(cmd);
+
+	if (!full_path)
+		error_command_not_found(cmd, argv);
+
+	if (access(full_path, X_OK) == -1)
+	{
+		perror(argv[0]);
+		if (full_path != cmd)
+			free(full_path);
+		return;
+	}
 
 	child_pid = fork();
-
 	if (child_pid == 0)
 	{
-		if (execve(cmd, args, environ) == -1)
-		{
-			perror(argv[0]);
-
-			if (data->line)
-			{
-				free(data->line);
-				data->line = NULL;
-			}
-
-			exit(EXIT_FAILURE);
-		}
+		if (execve(full_path, args, environ) == -1)
+			handle_exec_error(argv);
 	}
 	else
-	{
 		wait(&status);
-	}
+
+	if (full_path != cmd)
+		free(full_path);
 }
