@@ -8,23 +8,41 @@
  */
 void execute_command(char *cmd, char **args, char *argv[])
 {
-	pid_t child_pid;
-	int status;
 	shell_data_t *data = get_data();
 
-	child_pid = fork();
+	char *path = getenv("PATH");
+	char *path_copy = strdup(path);
+	char *dir = strtok(path_copy, ":");
 
-	if (child_pid == 0)
+	while (dir != NULL)
 	{
-		if (execve(cmd, args, environ) == -1)
+	char full_path[1024];
+
+	snprintf(full_path, sizeof(full_path), "%s/%s", dir, cmd);
+
+	if (access(full_path, X_OK) == 0)
+	{
+	pid_t child_pid = fork();
+
+		if (child_pid == 0)
 		{
-			perror(argv[0]);
-			free(data->line);
-			exit(EXIT_FAILURE);
+		execve(full_path, args, environ);
+		perror(argv[0]);
+		free(data->line);
+		free(path_copy);
+		exit(EXIT_FAILURE);
 		}
+		else
+		{
+		wait(NULL);
+		free(path_copy);
+		return;
+			}
+		}
+	dir = strtok(NULL, ":");
 	}
-	else
-	{
-		wait(&status);
-	}
+
+	fprintf(stderr, "%s: command not found\n", cmd);
+	free(path_copy);
 }
+
