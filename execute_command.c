@@ -19,7 +19,13 @@ void execute_command(char *cmd, char **args, char *argv[])
 		if (execve(cmd, args, environ) == -1)
 		{
 			perror(argv[0]);
-			free(data->line);
+
+			if (data->line)
+			{
+				free(data->line);
+				data->line = NULL;
+			}
+
 			exit(EXIT_FAILURE);
 		}
 	}
