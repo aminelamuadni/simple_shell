@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 #include <string.h>
+#include <sys/stat.h>
 
 #define MAX_ARGS 64
 
@@ -29,5 +30,11 @@ char **tokenize_input(char *line);
 ssize_t read_input(char **line, size_t *len);
 void execute_command(char *cmd, char **args, char *argv[]);
 int is_interactive(void);
+char *get_cmd_path(char *cmd);
+
+char *_strcat(char *dest, const char *src);
+int _strstart(char *str, char *substr);
+size_t _strlen(const char *s);
+char *_strchr(const char *s, int c);
 
 #endif /* SHELL_H */
