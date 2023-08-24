@@ -12,7 +12,9 @@ void execute_command(char *cmd, char **args, char *argv[])
 	pid_t child_pid;
 	int status;
 	shell_data_t *data = get_data();
+
 	child_pid = fork();
+
 	if (child_pid == 0)
 	{
 		if (execve(cmd, args, environ) == -1)
