@@ -32,20 +32,27 @@ static void cleanup_after_execution(shell_data_t *data)
 	}
 }
 
-
 /**
- * print_environment - Prints the current environment variables.
+ * is_valid_num - checks if the given string is a valid number.
+ * @s: string to check.
+ * Return: 1 if string is a valid number, otherwise 0.
  */
-void print_environment(void)
+int is_valid_num(char *s)
 {
-	int index = 0;
-
-	while (environ[index])
+	if (*s == '-')
 	{
-		write(STDOUT_FILENO, environ[index], _strlen(environ[index]));
-		write(STDOUT_FILENO, "\n", 1);
-		index++;
+		s++;
 	}
+
+	while (*s)
+	{
+		if (*s < '0' || *s > '9')
+		{
+			return (0);
+		}
+		s++;
+	}
+	return (1);
 }
 
 /**
@@ -63,6 +70,23 @@ static int process_input_line(char *line, char *argv[])
 	{
 		if (_strcmp(args[0], "exit") == 0)
 		{
+			if (args[1])
+			{
+				last_status = _atoi(args[1]);
+
+				if (!is_valid_num(args[1]) || last_status < 0)
+				{
+					write(2, argv[0], _strlen(argv[0]));
+					write(2, ": 1: ", 5);
+					write(2, args[0], _strlen(args[0]));
+					write(2, ": Illegal number: ", 18);
+					write(2, args[1], _strlen(args[1]));
+					write(2, "\n", 1);
+
+					last_status = 2;
+				}
+			}
+
 			cleanup_after_execution(get_data());
 			exit(last_status);
 		}
