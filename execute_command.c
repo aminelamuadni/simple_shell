@@ -16,8 +16,9 @@ static char *handle_relative_path_cmd(char *cmd)
  * error_command_not_found - Reports an error when a command is not found.
  * @cmd: The command that was not found.
  * @argv: Argument vector from main for error reporting.
+ * Return: Error status indicating command not found (127).
  */
-static void error_command_not_found(char *cmd, char *argv[])
+static int error_command_not_found(char *cmd, char *argv[])
 {
 	shell_data_t *data = get_data();
 
@@ -30,14 +31,15 @@ static void error_command_not_found(char *cmd, char *argv[])
 		free(data->line);
 		data->line = NULL;
 	}
-	exit(127);
+	return (127);
 }
 
 /**
  * handle_exec_error - Handles errors during execve execution.
  * @argv: Argument vector from main for error reporting.
+ * Return: Error status indicating execution failure (typically EXIT_FAILURE).
  */
-static void handle_exec_error(char *argv[])
+static int handle_exec_error(char *argv[])
 {
 	shell_data_t *data = get_data();
 
@@ -47,7 +49,7 @@ static void handle_exec_error(char *argv[])
 		free(data->line);
 		data->line = NULL;
 	}
-	exit(EXIT_FAILURE);
+	return (EXIT_FAILURE);
 }
 
 /**
@@ -55,33 +57,45 @@ static void handle_exec_error(char *argv[])
  * @cmd: The command to execute.
  * @args: The arguments for the command.
  * @argv: Argument vector from main for error reporting.
+ * Return: The exit status of the executed command or error code.
  */
-void execute_command(char *cmd, char **args, char *argv[])
+int execute_command(char *cmd, char **args, char *argv[])
 {
 	pid_t child_pid;
 	int status;
 	char *full_path = handle_relative_path_cmd(cmd);
 
 	if (!full_path)
-		error_command_not_found(cmd, argv);
+		return (error_command_not_found(cmd, argv));
 
 	if (access(full_path, X_OK) == -1)
 	{
 		perror(argv[0]);
 		if (full_path != cmd)
 			free(full_path);
-		return;
+		return (126);
 	}
 
 	child_pid = fork();
 	if (child_pid == 0)
 	{
 		if (execve(full_path, args, environ) == -1)
+		{
 			handle_exec_error(argv);
+			exit(EXIT_FAILURE);
+		}
 	}
 	else
+	{
 		wait(&status);
+		if (WIFEXITED(status))
+			status = WEXITSTATUS(status);
+		else
+			status = 1;
+	}
 
 	if (full_path != cmd)
 		free(full_path);
+
+	return (status);
 }
