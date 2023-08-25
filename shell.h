@@ -26,6 +26,7 @@ extern char **environ;
 shell_data_t *get_data(void);
 void handle_sigint(int sig);
 void print_prompt(void);
+void print_environment(void);
 char **tokenize_input(char *line);
 ssize_t read_input(char **line, size_t *len);
 int execute_command(char *cmd, char **args, char *argv[]);
@@ -37,5 +38,6 @@ int _strstart(char *str, char *substr);
 size_t _strlen(const char *s);
 char *_strchr(const char *s, int c);
 int _strcmp(char *s1, char *s2);
+int _atoi(char *s);
 
 #endif /* SHELL_H */
