@@ -13,10 +13,10 @@ static char *handle_relative_path_cmd(char *cmd)
 }
 
 /**
- * error_command_not_found - Reports an error when a command is not found.
+ * error_command_not_found - Reports an error when the command is not found.
  * @cmd: The command that was not found.
- * @argv: Argument vector from main for error reporting.
- * Return: Error status indicating command not found (127).
+ * @argv: Argument vector from main for the error reporting.
+ * Return: Error status indicating the command is not found (127).
  */
 static int error_command_not_found(char *cmd, char *argv[])
 {
