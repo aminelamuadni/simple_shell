@@ -32,6 +32,22 @@ static void cleanup_after_execution(shell_data_t *data)
 	}
 }
 
+
+/**
+ * print_environment - Prints the current environment variables.
+ */
+void print_environment(void)
+{
+	int index = 0;
+
+	while (environ[index])
+	{
+		write(STDOUT_FILENO, environ[index], _strlen(environ[index]));
+		write(STDOUT_FILENO, "\n", 1);
+		index++;
+	}
+}
+
 /**
  * process_input_line - Processes each input line and executes the command.
  * @line: The current input line.
@@ -49,6 +65,10 @@ static int process_input_line(char *line, char *argv[])
 		{
 			cleanup_after_execution(get_data());
 			exit(last_status);
+		}
+		else if (_strcmp(args[0], "env") == 0)
+		{
+			print_environment();
 		}
 		else if (args[0][0])
 		{
